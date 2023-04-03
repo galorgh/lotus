@@ -21,7 +21,6 @@
 /cmd/lotus-townhall/townhall/build
 /cmd/lotus-townhall/townhall/package-lock.json
 extern/filecoin-ffi/rust/target
-extern/**
 **/*.a
 **/*.pc
 /**/*/.DS_STORE
@@ -53,3 +52,4 @@ dist/
 # The following files are checked into git and result
 # in dirty git state if removed from the docker context
 !extern/filecoin-ffi/rust/filecoin.pc
+!extern/test-vectors
