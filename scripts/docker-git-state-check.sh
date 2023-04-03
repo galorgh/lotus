@@ -1,4 +1,4 @@
-exit 0
+#!/usr/bin/env bash
 set -e
 
 if [ -z "$(git status --porcelain)" ]; then
