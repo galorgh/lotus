@@ -24,7 +24,7 @@ var NetworkBundle = "devnet"
 var BundleOverrides map[actorstypes.Version]string
 var ActorDebugging = true
 
-const GenesisNetworkVersion = network.Version17
+const GenesisNetworkVersion = network.Version18
 
 var UpgradeBreezeHeight = abi.ChainEpoch(-1)
 
@@ -60,7 +60,7 @@ var UpgradeSkyrHeight = abi.ChainEpoch(-19)
 
 var UpgradeSharkHeight = abi.ChainEpoch(-20)
 
-var UpgradeHyggeHeight = abi.ChainEpoch(30)
+var UpgradeHyggeHeight = abi.ChainEpoch(-21)
 
 var DrandSchedule = map[abi.ChainEpoch]DrandEnum{
 	0: DrandMainnet,
