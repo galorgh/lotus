@@ -13,9 +13,9 @@ import (
 	"github.com/dgraph-io/badger/v2"
 	"github.com/dgraph-io/badger/v2/options"
 	"github.com/dgraph-io/badger/v2/pb"
+	blocks "github.com/ipfs/go-block-format"
 	"github.com/ipfs/go-cid"
 	ipld "github.com/ipfs/go-ipld-format"
-	blocks "github.com/ipfs/go-libipfs/blocks"
 	logger "github.com/ipfs/go-log/v2"
 	pool "github.com/libp2p/go-buffer-pool"
 	"github.com/multiformats/go-base32"
@@ -395,6 +395,9 @@ func (b *Blockstore) doCopy(from, to *badger.DB) error {
 	workers := runtime.NumCPU() / 2
 	if workers < 2 {
 		workers = 2
+	}
+	if workers > 8 {
+		workers = 8
 	}
 
 	stream := from.NewStream()
