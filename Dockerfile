@@ -28,7 +28,7 @@ RUN set -eux; \
     case "${BUILDARCH}" in \
         amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='5cc9ffd1026e82e7fb2eec2121ad71f4b0f044e88bca39207b3f6b769aaa799c' ;; \
         arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='e189948e396d47254103a49c987e7fb0e5dd8e34b200aa4481ecc4b8e41fb929' ;; \
-        *) echo >&2 "unsupported build architecture: ${TARGETARCH}"; exit 1 ;; \
+        *) echo >&2 "unsupported build architecture: ${BUILDARCH}"; exit 1 ;; \
     esac; \
     url="https://static.rust-lang.org/rustup/archive/1.25.1/${rustArch}/rustup-init"; \
     wget "$url"; \
