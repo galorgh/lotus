@@ -1,6 +1,16 @@
+FROM --platform=$BUILDPLATFORM golang:1.19.7-buster AS amd64-builder
+ONBUILD ENV CARGO_BUILD_TARGET=x86_64-unknown-linux-gnu
+
+FROM --platform=$BUILDPLATFORM golang:1.19.7-buster AS arm64-builder
+ONBUILD ENV CARGO_BUILD_TARGET=aarch64-unknown-linux-gnu
+ 
 #####################################
-FROM golang:1.19.7-buster AS lotus-builder
+FROM $TARGETARCH-builder AS lotus-builder
 MAINTAINER Lotus Development Team
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG BUILDARCH
 
 RUN apt-get update && apt-get install -y ca-certificates build-essential clang ocl-icd-opencl-dev ocl-icd-libopencl1 jq libhwloc-dev
 
@@ -10,14 +20,15 @@ ENV XDG_CACHE_HOME="/tmp"
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH \
-    RUST_VERSION=1.63.0
+    RUST_VERSION=1.63.0 \
+    GOOS=${TARGETOS} \
+    GOARCH=${TARGETARCH}
 
 RUN set -eux; \
-    dpkgArch="$(dpkg --print-architecture)"; \
-    case "${dpkgArch##*-}" in \
+    case "${BUILDARCH}" in \
         amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='5cc9ffd1026e82e7fb2eec2121ad71f4b0f044e88bca39207b3f6b769aaa799c' ;; \
         arm64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='e189948e396d47254103a49c987e7fb0e5dd8e34b200aa4481ecc4b8e41fb929' ;; \
-        *) echo >&2 "unsupported architecture: ${dpkgArch}"; exit 1 ;; \
+        *) echo >&2 "unsupported build architecture: ${TARGETARCH}"; exit 1 ;; \
     esac; \
     url="https://static.rust-lang.org/rustup/archive/1.25.1/${rustArch}/rustup-init"; \
     wget "$url"; \
@@ -28,7 +39,9 @@ RUN set -eux; \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME; \
     rustup --version; \
     cargo --version; \
-    rustc --version;
+    rustc --version; \
+    rustup target add $CARGO_BUILD_TARGET;
+    
 
 COPY ./ /opt/filecoin
 WORKDIR /opt/filecoin
